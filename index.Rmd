@@ -5,7 +5,7 @@ output: html_document
 
 ## Filtering Columns and Rows
 
-With SQL, you can filter columns and rows by using SELECT and WHERE. Let's look at an example using the Lahman database. So we should first load that data base, along with the package sqldf.
+With SQL, you can filter columns and rows by using SELECT and WHERE. Let's look at an example using the Lahman database. So we should first load that database, along with the package sqldf.
 
 ```{r message=FALSE, warning=FALSE}
 library(Lahman)
@@ -19,3 +19,41 @@ query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and yea
 sqldf(query)
 ```
 
+Here are a few examples of filtering columns and rows using the Lahman database.Remeber you still need to first load the Lahman database, along with the package sqldf.
+
+##### Example 1:
+
+Find all instances where Yankees have hit 40 homeruns or more.
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and HR>=40"
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 30 instances.
+
+##### Example 2:
+
+Find all instances where a player had more than 40 Homeruns but less than 60 Strikeouts.
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR,SO FROM Batting WHERE HR>40 and SO<60"
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 28 instances.
+
+It is important to note the changes in the query. SO was added to the SELECT list since you were looking for Strikeout data. Also since the exmaple was for all teams, it was necessary to remove the teamID='NYA'. Also before running the new query, you must highlight the new query to specify that you want this new one ran instead of the previous one.
+
+##### Example 3:
+
+Find all instances of Phillies in the 1970s hitting more than 30 Homeruns.
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='PHI' and HR>30 and yearID<=1979 and yearID>=1970"
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 9 instances.
+
+It is important to note the changes in the query. The team was now the Philliesm, so this required teamID='PHI' instead of teamID='NYA'. Also becuase you were searching for instances throughtout the 1970s, it was necessary to state that you were searching between 1970 and 1979. If only 1970 is placed than every date from 1970 on will appear. Hence why it was important to have yearID<=1979.
