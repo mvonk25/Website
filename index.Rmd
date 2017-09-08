@@ -57,3 +57,14 @@ sqldf(query)
 As you can see in the above chart, the answer is 9 instances.
 
 It is important to note the changes in the query. The team was now the Philliesm, so this required teamID='PHI' instead of teamID='NYA'. Also becuase you were searching for instances throughtout the 1970s, it was necessary to state that you were searching between 1970 and 1979. If only 1970 is placed than every date from 1970 on will appear. Hence why it was important to have yearID<=1979.
+
+## ORDER BY
+
+With SQL, you can order the rows of your output. For instnace, suppose you want to see every instance of a player hitting more than 50 homeruns. But you would like the players with the most homeruns to be at the top. We could do the following:
+
+```{r}
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting WHERE HR>50 ORDER BY HR DESC"
+
+sqldf(query)
+```
+
