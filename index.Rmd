@@ -19,7 +19,7 @@ query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and yea
 sqldf(query)
 ```
 
-Here are a few examples of filtering columns and rows using the Lahman database.Remeber you still need to first load the Lahman database, along with the package sqldf.
+Here are a few examples of filtering columns and rows using the Lahman database. Remeber you still need to first load the Lahman database, along with the package sqldf if you have restarted a new session on RStudio.
 
 ##### Example 1:
 
@@ -60,7 +60,9 @@ It is important to note the changes in the query. The team was now the Philliesm
 
 ## ORDER BY
 
-With SQL, you can order the rows of your output. For instnace, suppose you want to see every instance of a player hitting more than 50 homeruns. But you would like the players with the most homeruns to be at the top. We could do the following:
+With SQL, you can order the rows of your output. To order the information, you use the ORDER BY command. This command is set with the default to order the information in ascending order, from smallest to largest. To order the information in descending order, simply enter the command DESC after the ORDER BY command.
+
+For instance, suppose you want to see every instance of a player hitting more than 50 homeruns. But you would like the players with the most homeruns to be at the top. We could do the following:
 
 ```{r}
 query<-"SELECT playerID,teamID,yearID,HR FROM Batting WHERE HR>50 ORDER BY HR DESC"
@@ -68,3 +70,56 @@ query<-"SELECT playerID,teamID,yearID,HR FROM Batting WHERE HR>50 ORDER BY HR DE
 sqldf(query)
 ```
 
+Here is one example of using the ORDER BY command using the Lahman database. 
+
+##### Example 1:
+
+Find all instnaces of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having the least strikouts at the top.
+
+```{r}
+query<-"SELECT playerID,teamID,yearID,SO,AB FROM Batting WHERE SO<10 and AB>=400 ORDER BY SO"
+
+sqldf(query)
+```
+
+As you can see in the chart above, the answer is 65 instances.
+
+## Aggregation
+
+With SQL, you can squash the charts down into a more defined listing or even a single record. This is done with the GROUP BY command combinded with a few other commands to specify specifically what you want to do with the data. You can use the command sum to find the total of the data, the command avg to find the average of the data, the command max to find the maximum of the data, and the command min to find the minimum of the data.
+
+For instance, suppose you want to find Babe Ruth's career homerun total. We could do the following:
+
+```{r}
+query<-"SELECT playerID,sum(HR) FROM Batting WHERE playerID='ruthba01' GROUP BY playerID"
+
+sqldf(query)
+```
+
+Here are a few examples of using the GROUP BY command using the Lahman database.
+
+##### Example 1: Using Sum
+
+Find all the career homerun totals for all players, but limit the output to totals from 600 or more. Order by career total from largest to smallest on the chart.
+
+```{r}
+query<-"SELECT playerID,sum(HR) FROM Batting GROUP BY playerID HAVING sum(HR)>=600 ORDER BY sum(HR) DESC"
+
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 8 players.
+
+It is important to note that when GROUP BY command comes right after the FROM command, then the WHERE command is changed to the HAVING command. WHERE and HAVING commands do the same things, but which command to use is dependant on its placement in the command string.
+
+##### Example 2: Using Average
+
+Find all the players who have averaged more than 30 homeruns per year throughout their career. Let's order by having the highest average at the top of the chart.
+
+```{r}
+query<-"SELECT playerID,avg(HR) FROM Batting GROUP BY playerID HAVING avg(HR)>30 ORDER BY avg(HR) DESC"
+
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 13 players.
