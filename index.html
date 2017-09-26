@@ -125,8 +125,11 @@ $(document).ready(function () {
 <p>With SQL, you can filter columns and rows by using SELECT and WHERE. Let’s look at an example using the Lahman database. So we should first load that database, along with the package sqldf.</p>
 <pre class="r"><code>library(Lahman)
 library(sqldf)</code></pre>
-<p>Suppose now I would like to see the homerun totals for the 1927 Yankees. I could write the following query:</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and yearID=1927&quot;
+<p>Suppose now you would like to see the home run totals for the 1927 Yankees. You could write the following query:</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR 
+FROM Batting 
+WHERE teamID='NYA' and yearID=1927&quot;
+
 sqldf(query)</code></pre>
 <pre><code>##     playerID yearID teamID HR
 ## 1  beallwa01   1927    NYA  0
@@ -154,11 +157,14 @@ sqldf(query)</code></pre>
 ## 23 shockur01   1927    NYA  0
 ## 24 thomamy01   1927    NYA  0
 ## 25  weraju01   1927    NYA  1</code></pre>
-<p>Here are a few examples of filtering columns and rows using the Lahman database. Remeber you still need to first load the Lahman database, along with the package sqldf if you have restarted a new session on RStudio.</p>
+<p>Here are a few examples of filtering columns and rows using the Lahman database. Remember you still need to first load the Lahman database, along with the package sqldf if you have restarted a new session on RStudio.</p>
 <div id="example-1" class="section level5">
 <h5>Example 1:</h5>
-<p>Find all instances where Yankees have hit 40 homeruns or more.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and HR&gt;=40&quot;
+<p>Find all instances where Yankees have hit 40 home runs or more.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR
+FROM Batting
+WHERE teamID='NYA' and HR&gt;=40&quot;
+
 sqldf(query)</code></pre>
 <pre><code>##     playerID yearID teamID HR
 ## 1   ruthba01   1920    NYA 54
@@ -195,8 +201,11 @@ sqldf(query)</code></pre>
 </div>
 <div id="example-2" class="section level5">
 <h5>Example 2:</h5>
-<p>Find all instances where a player had more than 40 Homeruns but less than 60 Strikeouts.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR,SO FROM Batting WHERE HR&gt;40 and SO&lt;60&quot;
+<p>Find all instances where a player had more than 40 Home runs but less than 60 Strikeouts.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR,SO 
+FROM Batting 
+WHERE HR&gt;40 and SO&lt;60&quot;
+
 sqldf(query)</code></pre>
 <pre><code>##     playerID yearID teamID HR SO
 ## 1  hornsro01   1922    SLN 42 50
@@ -228,12 +237,15 @@ sqldf(query)</code></pre>
 ## 27 pujolal01   2004    SLN 46 52
 ## 28 pujolal01   2006    SLN 49 50</code></pre>
 <p>As you can see in the above chart, the answer is 28 instances.</p>
-<p>It is important to note the changes in the query. SO was added to the SELECT list since you were looking for Strikeout data. Also since the exmaple was for all teams, it was necessary to remove the teamID=‘NYA’. Also before running the new query, you must highlight the new query to specify that you want this new one ran instead of the previous one.</p>
+<p>It is important to note the changes in the query. SO was added to the SELECT list since you were looking for Strikeout data. Also since the example was for all teams, it was necessary to remove the teamID=‘NYA’. Also before running the new query, you must highlight the new query to specify that you want this new query run instead of the previous one.</p>
 </div>
 <div id="example-3" class="section level5">
 <h5>Example 3:</h5>
-<p>Find all instances of Phillies in the 1970s hitting more than 30 Homeruns.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='PHI' and HR&gt;30 and yearID&lt;=1979 and yearID&gt;=1970&quot;
+<p>Find all instances of Phillies in the 1970s hitting more than 30 Home runs.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR
+FROM Batting
+WHERE teamID='PHI' and HR&gt;30 and yearID&lt;=1979 and yearID&gt;=1970&quot;
+
 sqldf(query)</code></pre>
 <pre><code>##    playerID yearID teamID HR
 ## 1 johnsde01   1971    PHI 34
@@ -246,14 +258,20 @@ sqldf(query)</code></pre>
 ## 8 luzingr01   1978    PHI 35
 ## 9 schmimi01   1979    PHI 45</code></pre>
 <p>As you can see in the above chart, the answer is 9 instances.</p>
-<p>It is important to note the changes in the query. The team was now the Philliesm, so this required teamID=‘PHI’ instead of teamID=‘NYA’. Also becuase you were searching for instances throughtout the 1970s, it was necessary to state that you were searching between 1970 and 1979. If only 1970 is placed than every date from 1970 on will appear. Hence why it was important to have yearID&lt;=1979.</p>
+<p>It is important to note the changes in the query. The team was now the Phillies, so this required teamID=‘PHI’ instead of teamID=‘NYA’. Also because you were searching for instances throughout the 1970s, it was necessary to state that you were searching between 1970 and 1979. If only 1970 is written then every date from 1970 on will appear. Hence why it was important to have yearID&lt;=1979.</p>
 </div>
 </div>
 <div id="order-by" class="section level2">
 <h2>ORDER BY</h2>
 <p>With SQL, you can order the rows of your output. To order the information, you use the ORDER BY command. This command is set with the default to order the information in ascending order, from smallest to largest. To order the information in descending order, simply enter the command DESC after the ORDER BY command.</p>
-<p>For instance, suppose you want to see every instance of a player hitting more than 50 homeruns. But you would like the players with the most homeruns to be at the top. We could do the following:</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting WHERE HR&gt;50 ORDER BY HR DESC&quot;
+<p>Here are a few examples of using the ORDER BY command.</p>
+<div id="example-1-1" class="section level5">
+<h5>Example 1:</h5>
+<p>For instance, suppose you want to see every instance of a player hitting more than 50 home runs. But you would like the players with the most home runs to be at the top. We could do the following:</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR
+FROM Batting 
+WHERE HR&gt;50
+ORDER BY HR DESC&quot;
 
 sqldf(query)</code></pre>
 <pre><code>##     playerID teamID yearID HR
@@ -293,11 +311,16 @@ sqldf(query)</code></pre>
 ## 34  mayswi01    NY1   1955 51
 ## 35 fieldce01    DET   1990 51
 ## 36 jonesan01    ATL   2005 51</code></pre>
-<p>Here is one example of using the ORDER BY command using the Lahman database.</p>
-<div id="example-1-1" class="section level5">
-<h5>Example 1:</h5>
-<p>Find all instnaces of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having the least strikouts at the top.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,SO,AB FROM Batting WHERE SO&lt;10 and AB&gt;=400 ORDER BY SO&quot;
+<p>As you can see in the above chart, the answer is 36 instances.</p>
+<p>Here is another example of using the ORDER BY command using the Lahman database.</p>
+</div>
+<div id="example-2-1" class="section level5">
+<h5>Example 2:</h5>
+<p>Find all instances of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having the least strikeouts at the top.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,SO,AB 
+FROM Batting 
+WHERE SO&lt;10 and AB&gt;=400 
+ORDER BY SO&quot;
 
 sqldf(query)</code></pre>
 <pre><code>##     playerID teamID yearID SO  AB
@@ -368,21 +391,53 @@ sqldf(query)</code></pre>
 ## 65 mitchda01    CLE   1952  9 511</code></pre>
 <p>As you can see in the chart above, the answer is 65 instances.</p>
 </div>
+<div id="example-3-1" class="section level5">
+<h5>Example 3:</h5>
+<p>Find all instances of players hitting a career home run total of at least 600 home runs. Order by the highest home run totals at the top.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,sum(HR)
+FROM Batting
+GROUP BY playerID
+HAVING sum(HR)&gt;=600
+ORDER BY sum(HR) DESC&quot;
+
+sqldf(query)</code></pre>
+<pre><code>##    playerID teamID yearID sum(HR)
+## 1 bondsba01    SFN   2007     762
+## 2 aaronha01    ML4   1976     755
+## 3  ruthba01    BSN   1935     714
+## 4 rodrial01    NYA   2016     696
+## 5  mayswi01    NYN   1973     660
+## 6 griffke02    SEA   2010     630
+## 7 thomeji01    BAL   2012     612
+## 8  sosasa01    TEX   2007     609</code></pre>
+<p>As you can see in the above chart, the answer is 8 players.</p>
+</div>
 </div>
 <div id="aggregation" class="section level2">
 <h2>Aggregation</h2>
-<p>With SQL, you can squash the charts down into a more defined listing or even a single record. This is done with the GROUP BY command combinded with a few other commands to specify specifically what you want to do with the data. You can use the command sum to find the total of the data, the command avg to find the average of the data, the command max to find the maximum of the data, and the command min to find the minimum of the data.</p>
-<p>For instance, suppose you want to find Babe Ruth’s career homerun total. We could do the following:</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) FROM Batting WHERE playerID='ruthba01' GROUP BY playerID&quot;
+<p>With SQL, you can squash the charts down into a more defined listing or even a single record. This is done with the GROUP BY command combined with a few other commands to specify specifically what you want to do with the data. You can use the command sum to find the total of the data, the command avg to find the average of the data, the command max to find the maximum of the data, and the command min to find the minimum of the data.</p>
+<p>Here are some examples using GROUP By command and the different Aggregation commands.</p>
+<div id="example-1-using-sum" class="section level5">
+<h5>Example 1: Using Sum</h5>
+<p>For instance, suppose you want to find Babe Ruth’s career home run total. We could do the following:</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) 
+FROM Batting 
+WHERE playerID='ruthba01' 
+GROUP BY playerID&quot;
 
 sqldf(query)</code></pre>
 <pre><code>##   playerID sum(HR)
 ## 1 ruthba01     714</code></pre>
-<p>Here are a few examples of using the GROUP BY command using the Lahman database.</p>
-<div id="example-1-using-sum" class="section level5">
-<h5>Example 1: Using Sum</h5>
-<p>Find all the career homerun totals for all players, but limit the output to totals from 600 or more. Order by career total from largest to smallest on the chart.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) FROM Batting GROUP BY playerID HAVING sum(HR)&gt;=600 ORDER BY sum(HR) DESC&quot;
+<p>Here are a few more examples of using the GROUP BY command using the Lahman database.</p>
+</div>
+<div id="example-2-using-sum" class="section level5">
+<h5>Example 2: Using Sum</h5>
+<p>Find all the career home run totals for all players, but limit the output to totals from 600 or more. Order by career total from largest to smallest on the chart.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) 
+FROM Batting 
+GROUP BY playerID 
+HAVING sum(HR)&gt;=600 
+ORDER BY sum(HR) DESC&quot;
 
 sqldf(query)</code></pre>
 <pre><code>##    playerID sum(HR)
@@ -395,12 +450,16 @@ sqldf(query)</code></pre>
 ## 7 thomeji01     612
 ## 8  sosasa01     609</code></pre>
 <p>As you can see in the above chart, the answer is 8 players.</p>
-<p>It is important to note that when GROUP BY command comes right after the FROM command, then the WHERE command is changed to the HAVING command. WHERE and HAVING commands do the same things, but which command to use is dependant on its placement in the command string.</p>
+<p>It is important to note that when GROUP BY command comes right after the FROM command, then the WHERE command is changed to the HAVING command. WHERE and HAVING commands do the same things, but which command to use is dependent on its placement in the command string.</p>
 </div>
-<div id="example-2-using-average" class="section level5">
-<h5>Example 2: Using Average</h5>
-<p>Find all the players who have averaged more than 30 homeruns per year throughout their career. Let’s order by having the highest average at the top of the chart.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,avg(HR) FROM Batting GROUP BY playerID HAVING avg(HR)&gt;30 ORDER BY avg(HR) DESC&quot;
+<div id="example-3-using-average" class="section level5">
+<h5>Example 3: Using Average</h5>
+<p>Find all the players who have averaged more than 30 home runs per year throughout their career. Let’s order by having the highest average at the top of the chart.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,avg(HR) 
+FROM Batting 
+GROUP BY playerID 
+HAVING avg(HR)&gt;30 
+ORDER BY avg(HR) DESC&quot;
 
 sqldf(query)</code></pre>
 <pre><code>##     playerID  avg(HR)
@@ -418,6 +477,144 @@ sqldf(query)</code></pre>
 ## 12 schmimi01 30.44444
 ## 13 abreujo02 30.33333</code></pre>
 <p>As you can see in the above chart, the answer is 13 players.</p>
+</div>
+</div>
+<div id="joins" class="section level2">
+<h2>Joins</h2>
+<p>Also with SQL you can join together multiple charts. This is done with the command INNER JOIN and the name of the chart. It is important to be specific about which table you want to join together; You must eliminate all ambiguity. This means that if there are any columns that appear in multiple charts, then you must specify which column from what table you want to see. You do this by specifying what columns will overlap with the command ON table name.column name=other table name.column name. You can find out if tables have the same column name by individually checking each table using colnames(table name) to see all the column names for that specific table.</p>
+<p>Here are some examples of using the INNER JOIN command.</p>
+<div id="example-1-using-master-table" class="section level5">
+<h5>Example 1: Using Master Table</h5>
+<p>Join together Master table with Batting table. Find all instances of Babe Ruth hitting home runs.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT nameFirst,nameLast,teamID,yearID,HR
+FROM Batting
+INNER JOIN Master
+ON Batting.playerID=MAster.playerID
+WHERE Batting.playerID='ruthba01'&quot;
+
+sqldf(query)</code></pre>
+<pre><code>##    nameFirst nameLast teamID yearID HR
+## 1       Babe     Ruth    BOS   1914  0
+## 2       Babe     Ruth    BOS   1915  4
+## 3       Babe     Ruth    BOS   1916  3
+## 4       Babe     Ruth    BOS   1917  2
+## 5       Babe     Ruth    BOS   1918 11
+## 6       Babe     Ruth    BOS   1919 29
+## 7       Babe     Ruth    NYA   1920 54
+## 8       Babe     Ruth    NYA   1921 59
+## 9       Babe     Ruth    NYA   1922 35
+## 10      Babe     Ruth    NYA   1923 41
+## 11      Babe     Ruth    NYA   1924 46
+## 12      Babe     Ruth    NYA   1925 25
+## 13      Babe     Ruth    NYA   1926 47
+## 14      Babe     Ruth    NYA   1927 60
+## 15      Babe     Ruth    NYA   1928 54
+## 16      Babe     Ruth    NYA   1929 46
+## 17      Babe     Ruth    NYA   1930 49
+## 18      Babe     Ruth    NYA   1931 46
+## 19      Babe     Ruth    NYA   1932 41
+## 20      Babe     Ruth    NYA   1933 34
+## 21      Babe     Ruth    NYA   1934 22
+## 22      Babe     Ruth    BSN   1935  6</code></pre>
+<p>As you can see in the above chart, the answer is 22 instances.</p>
+</div>
+<div id="example-2-using-master-table-and-salaries-table" class="section level5">
+<h5>Example 2: Using Master Table and Salaries Table</h5>
+<p>Find all instances of players with the first name Bob who averaged more than 1 million dollars in salary over their career. Include first and last names and order from largest to smallest.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT nameFirst,nameLast,avg(salary)
+FROM Master
+INNER JOIN Salaries
+ON Master.playerID=Salaries.playerID
+WHERE nameFirst='Bob'
+GROUP BY Salaries.playerID
+HAVING avg(salary)&gt;1000000
+ORDER BY avg(salary) DESC&quot;
+
+sqldf(query)</code></pre>
+<pre><code>##   nameFirst  nameLast avg(salary)
+## 1       Bob   Wickman     2635813
+## 2       Bob     Welch     1930417
+## 3       Bob     Howry     1804583
+## 4       Bob    Horner     1416667
+## 5       Bob Tewksbury     1288182
+## 6       Bob   Stanley     1067500
+## 7       Bob     Boone     1047580
+## 8       Bob     Ojeda     1035926</code></pre>
+<p>As you can see in the chart above, the answer is 8 players.</p>
+<p>One helpful trick is that it’s sometimes easier to write out commands you need from one table first and then worry about what you need from the other table.</p>
+</div>
+<div id="example-3-using-teams-table" class="section level5">
+<h5>Example 3: Using Teams Table</h5>
+<p>Join together Teams table with Batting table. Find all instances of Babe Ruth hitting home runs and the team name for each instance.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT playerID,name,Batting.yearID,Batting.HR
+FROM Batting
+INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE playerID='ruthba01'&quot;
+
+sqldf(query)</code></pre>
+<pre><code>##    playerID             name yearID HR
+## 1  ruthba01   Boston Red Sox   1914  0
+## 2  ruthba01   Boston Red Sox   1915  4
+## 3  ruthba01   Boston Red Sox   1916  3
+## 4  ruthba01   Boston Red Sox   1917  2
+## 5  ruthba01   Boston Red Sox   1918 11
+## 6  ruthba01   Boston Red Sox   1919 29
+## 7  ruthba01 New York Yankees   1920 54
+## 8  ruthba01 New York Yankees   1921 59
+## 9  ruthba01 New York Yankees   1922 35
+## 10 ruthba01 New York Yankees   1923 41
+## 11 ruthba01 New York Yankees   1924 46
+## 12 ruthba01 New York Yankees   1925 25
+## 13 ruthba01 New York Yankees   1926 47
+## 14 ruthba01 New York Yankees   1927 60
+## 15 ruthba01 New York Yankees   1928 54
+## 16 ruthba01 New York Yankees   1929 46
+## 17 ruthba01 New York Yankees   1930 49
+## 18 ruthba01 New York Yankees   1931 46
+## 19 ruthba01 New York Yankees   1932 41
+## 20 ruthba01 New York Yankees   1933 34
+## 21 ruthba01 New York Yankees   1934 22
+## 22 ruthba01    Boston Braves   1935  6</code></pre>
+<p>As you can see in the above chart, the answer is 22 instances.</p>
+<p>It is important to note that in the SELECT line it was necessary to specify that yearID and HR came from the Batting table.</p>
+</div>
+<div id="example-4-joining-together-3-tables" class="section level5">
+<h5>Example 4: Joining Together 3 Tables</h5>
+<p>Join together Master table, Batting table, and Teams table. Find instances of Babe Ruth hitting home runs, with his first and last name and the team names.</p>
+<pre class="r"><code>query&lt;-&quot;SELECT nameFirst,nameLast,name,Batting.yearID,Batting.HR
+FROM (Batting
+INNER JOIN Master
+ON Batting.playerID=Master.playerID)
+INNER JOIN Teams
+ON Batting.teamID=Teams.teamID AND Batting.yearID=Teams.yearID
+WHERE Batting.playerID='ruthba01'&quot;
+
+sqldf(query)</code></pre>
+<pre><code>##    nameFirst nameLast             name yearID HR
+## 1       Babe     Ruth   Boston Red Sox   1914  0
+## 2       Babe     Ruth   Boston Red Sox   1915  4
+## 3       Babe     Ruth   Boston Red Sox   1916  3
+## 4       Babe     Ruth   Boston Red Sox   1917  2
+## 5       Babe     Ruth   Boston Red Sox   1918 11
+## 6       Babe     Ruth   Boston Red Sox   1919 29
+## 7       Babe     Ruth New York Yankees   1920 54
+## 8       Babe     Ruth New York Yankees   1921 59
+## 9       Babe     Ruth New York Yankees   1922 35
+## 10      Babe     Ruth New York Yankees   1923 41
+## 11      Babe     Ruth New York Yankees   1924 46
+## 12      Babe     Ruth New York Yankees   1925 25
+## 13      Babe     Ruth New York Yankees   1926 47
+## 14      Babe     Ruth New York Yankees   1927 60
+## 15      Babe     Ruth New York Yankees   1928 54
+## 16      Babe     Ruth New York Yankees   1929 46
+## 17      Babe     Ruth New York Yankees   1930 49
+## 18      Babe     Ruth New York Yankees   1931 46
+## 19      Babe     Ruth New York Yankees   1932 41
+## 20      Babe     Ruth New York Yankees   1933 34
+## 21      Babe     Ruth New York Yankees   1934 22
+## 22      Babe     Ruth    Boston Braves   1935  6</code></pre>
+<p>As you can see in the chart above, the answer is 22 instances.</p>
 </div>
 </div>
 

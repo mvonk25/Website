@@ -12,21 +12,27 @@ library(Lahman)
 library(sqldf)
 ```
 
-Suppose now I would like to see the homerun totals for the 1927 Yankees. I could write the following query:
+Suppose now you would like to see the home run totals for the 1927 Yankees. You could write the following query:
 
 ```{r}
-query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and yearID=1927"
+query<-"SELECT playerID,yearID,teamID,HR 
+FROM Batting 
+WHERE teamID='NYA' and yearID=1927"
+
 sqldf(query)
 ```
 
-Here are a few examples of filtering columns and rows using the Lahman database. Remeber you still need to first load the Lahman database, along with the package sqldf if you have restarted a new session on RStudio.
+Here are a few examples of filtering columns and rows using the Lahman database. Remember you still need to first load the Lahman database, along with the package sqldf if you have restarted a new session on RStudio.
 
 ##### Example 1:
 
-Find all instances where Yankees have hit 40 homeruns or more.
+Find all instances where Yankees have hit 40 home runs or more.
 
 ```{r}
-query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='NYA' and HR>=40"
+query<-"SELECT playerID,yearID,teamID,HR
+FROM Batting
+WHERE teamID='NYA' and HR>=40"
+
 sqldf(query)
 ```
 
@@ -34,92 +40,220 @@ As you can see in the above chart, the answer is 30 instances.
 
 ##### Example 2:
 
-Find all instances where a player had more than 40 Homeruns but less than 60 Strikeouts.
+Find all instances where a player had more than 40 Home runs but less than 60 Strikeouts.
 
 ```{r}
-query<-"SELECT playerID,yearID,teamID,HR,SO FROM Batting WHERE HR>40 and SO<60"
+query<-"SELECT playerID,yearID,teamID,HR,SO 
+FROM Batting 
+WHERE HR>40 and SO<60"
+
 sqldf(query)
 ```
 
 As you can see in the above chart, the answer is 28 instances.
 
-It is important to note the changes in the query. SO was added to the SELECT list since you were looking for Strikeout data. Also since the exmaple was for all teams, it was necessary to remove the teamID='NYA'. Also before running the new query, you must highlight the new query to specify that you want this new one ran instead of the previous one.
+It is important to note the changes in the query. SO was added to the SELECT list since you were looking for Strikeout data. Also since the example was for all teams, it was necessary to remove the teamID='NYA'. Also before running the new query, you must highlight the new query to specify that you want this new query run instead of the previous one.
 
 ##### Example 3:
 
-Find all instances of Phillies in the 1970s hitting more than 30 Homeruns.
+Find all instances of Phillies in the 1970s hitting more than 30 Home runs.
 
 ```{r}
-query<-"SELECT playerID,yearID,teamID,HR FROM Batting WHERE teamID='PHI' and HR>30 and yearID<=1979 and yearID>=1970"
+query<-"SELECT playerID,yearID,teamID,HR
+FROM Batting
+WHERE teamID='PHI' and HR>30 and yearID<=1979 and yearID>=1970"
+
 sqldf(query)
 ```
 
 As you can see in the above chart, the answer is 9 instances.
 
-It is important to note the changes in the query. The team was now the Philliesm, so this required teamID='PHI' instead of teamID='NYA'. Also becuase you were searching for instances throughtout the 1970s, it was necessary to state that you were searching between 1970 and 1979. If only 1970 is placed than every date from 1970 on will appear. Hence why it was important to have yearID<=1979.
+It is important to note the changes in the query. The team was now the Phillies, so this required teamID='PHI' instead of teamID='NYA'. Also because you were searching for instances throughout the 1970s, it was necessary to state that you were searching between 1970 and 1979. If only 1970 is written then every date from 1970 on will appear. Hence why it was important to have yearID<=1979.
 
 ## ORDER BY
 
 With SQL, you can order the rows of your output. To order the information, you use the ORDER BY command. This command is set with the default to order the information in ascending order, from smallest to largest. To order the information in descending order, simply enter the command DESC after the ORDER BY command.
 
-For instance, suppose you want to see every instance of a player hitting more than 50 homeruns. But you would like the players with the most homeruns to be at the top. We could do the following:
+Here are a few examples of using the ORDER BY command.
+
+##### Example 1:
+
+For instance, suppose you want to see every instance of a player hitting more than 50 home runs. But you would like the players with the most home runs to be at the top. We could do the following:
 
 ```{r}
-query<-"SELECT playerID,teamID,yearID,HR FROM Batting WHERE HR>50 ORDER BY HR DESC"
+query<-"SELECT playerID,teamID,yearID,HR
+FROM Batting 
+WHERE HR>50
+ORDER BY HR DESC"
 
 sqldf(query)
 ```
 
-Here is one example of using the ORDER BY command using the Lahman database. 
+As you can see in the above chart, the answer is 36 instances.
 
-##### Example 1:
+Here is another example of using the ORDER BY command using the Lahman database. 
 
-Find all instnaces of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having the least strikouts at the top.
+##### Example 2:
+
+Find all instances of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having the least strikeouts at the top.
 
 ```{r}
-query<-"SELECT playerID,teamID,yearID,SO,AB FROM Batting WHERE SO<10 and AB>=400 ORDER BY SO"
+query<-"SELECT playerID,teamID,yearID,SO,AB 
+FROM Batting 
+WHERE SO<10 and AB>=400 
+ORDER BY SO"
 
 sqldf(query)
 ```
 
 As you can see in the chart above, the answer is 65 instances.
 
-## Aggregation
+##### Example 3:
 
-With SQL, you can squash the charts down into a more defined listing or even a single record. This is done with the GROUP BY command combinded with a few other commands to specify specifically what you want to do with the data. You can use the command sum to find the total of the data, the command avg to find the average of the data, the command max to find the maximum of the data, and the command min to find the minimum of the data.
-
-For instance, suppose you want to find Babe Ruth's career homerun total. We could do the following:
+Find all instances of players hitting a career home run total of at least 600 home runs. Order by the highest home run totals at the top.
 
 ```{r}
-query<-"SELECT playerID,sum(HR) FROM Batting WHERE playerID='ruthba01' GROUP BY playerID"
-
-sqldf(query)
-```
-
-Here are a few examples of using the GROUP BY command using the Lahman database.
-
-##### Example 1: Using Sum
-
-Find all the career homerun totals for all players, but limit the output to totals from 600 or more. Order by career total from largest to smallest on the chart.
-
-```{r}
-query<-"SELECT playerID,sum(HR) FROM Batting GROUP BY playerID HAVING sum(HR)>=600 ORDER BY sum(HR) DESC"
+query<-"SELECT playerID,teamID,yearID,sum(HR)
+FROM Batting
+GROUP BY playerID
+HAVING sum(HR)>=600
+ORDER BY sum(HR) DESC"
 
 sqldf(query)
 ```
 
 As you can see in the above chart, the answer is 8 players.
 
-It is important to note that when GROUP BY command comes right after the FROM command, then the WHERE command is changed to the HAVING command. WHERE and HAVING commands do the same things, but which command to use is dependant on its placement in the command string.
+## Aggregation
 
-##### Example 2: Using Average
+With SQL, you can squash the charts down into a more defined listing or even a single record. This is done with the GROUP BY command combined with a few other commands to specify specifically what you want to do with the data. You can use the command sum to find the total of the data, the command avg to find the average of the data, the command max to find the maximum of the data, and the command min to find the minimum of the data.
 
-Find all the players who have averaged more than 30 homeruns per year throughout their career. Let's order by having the highest average at the top of the chart.
+Here are some examples using GROUP By command and the different Aggregation commands.
+
+##### Example 1: Using Sum
+
+For instance, suppose you want to find Babe Ruth's career home run total. We could do the following:
 
 ```{r}
-query<-"SELECT playerID,avg(HR) FROM Batting GROUP BY playerID HAVING avg(HR)>30 ORDER BY avg(HR) DESC"
+query<-"SELECT playerID,sum(HR) 
+FROM Batting 
+WHERE playerID='ruthba01' 
+GROUP BY playerID"
+
+sqldf(query)
+```
+
+Here are a few more examples of using the GROUP BY command using the Lahman database.
+
+##### Example 2: Using Sum
+
+Find all the career home run totals for all players, but limit the output to totals from 600 or more. Order by career total from largest to smallest on the chart.
+
+```{r}
+query<-"SELECT playerID,sum(HR) 
+FROM Batting 
+GROUP BY playerID 
+HAVING sum(HR)>=600 
+ORDER BY sum(HR) DESC"
+
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 8 players.
+
+It is important to note that when GROUP BY command comes right after the FROM command, then the WHERE command is changed to the HAVING command. WHERE and HAVING commands do the same things, but which command to use is dependent on its placement in the command string.
+
+##### Example 3: Using Average
+
+Find all the players who have averaged more than 30 home runs per year throughout their career. Let's order by having the highest average at the top of the chart.
+
+```{r}
+query<-"SELECT playerID,avg(HR) 
+FROM Batting 
+GROUP BY playerID 
+HAVING avg(HR)>30 
+ORDER BY avg(HR) DESC"
 
 sqldf(query)
 ```
 
 As you can see in the above chart, the answer is 13 players.
+
+## Joins
+
+Also with SQL you can join together multiple charts. This is done with the command INNER JOIN and the name of the chart. It is important to be specific about which table you want to join together; You must eliminate all ambiguity. This means that if there are any columns that appear in multiple charts, then you must specify which column from what table you want to see. You do this by specifying what columns will overlap with the command ON table name.column name=other table name.column name. You can find out if tables have the same column name by individually checking each table using colnames(table name) to see all the column names for that specific table.
+
+Here are some examples of using the INNER JOIN command.
+
+##### Example 1: Using Master Table
+
+Join together Master table with Batting table. Find all instances of Babe Ruth hitting home runs.
+
+```{r}
+query<-"SELECT nameFirst,nameLast,teamID,yearID,HR
+FROM Batting
+INNER JOIN Master
+ON Batting.playerID=MAster.playerID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 22 instances.
+
+##### Example 2: Using Master Table and Salaries Table
+
+Find all instances of players with the first name Bob who averaged more than 1 million dollars in salary over their career. Include first and last names and order from largest to smallest.
+
+```{r}
+query<-"SELECT nameFirst,nameLast,avg(salary)
+FROM Master
+INNER JOIN Salaries
+ON Master.playerID=Salaries.playerID
+WHERE nameFirst='Bob'
+GROUP BY Salaries.playerID
+HAVING avg(salary)>1000000
+ORDER BY avg(salary) DESC"
+
+sqldf(query)
+```
+
+As you can see in the chart above, the answer is 8 players.
+
+One helpful trick is that it's sometimes easier to write out commands you need from one table first and then worry about what you need from the other table.
+
+##### Example 3: Using Teams Table
+
+Join together Teams table with Batting table. Find all instances of Babe Ruth hitting home runs and the team name for each instance.
+
+```{r}
+query<-"SELECT playerID,name,Batting.yearID,Batting.HR
+FROM Batting
+INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE playerID='ruthba01'"
+
+sqldf(query)
+```
+
+As you can see in the above chart, the answer is 22 instances.
+
+It is important to note that in the SELECT line it was necessary to specify that yearID and HR came from the Batting table.
+
+##### Example 4: Joining Together 3 Tables
+
+Join together Master table, Batting table, and Teams table. Find instances of Babe Ruth hitting home runs, with his first and last name and the team names.
+
+```{r}
+query<-"SELECT nameFirst,nameLast,name,Batting.yearID,Batting.HR
+FROM (Batting
+INNER JOIN Master
+ON Batting.playerID=Master.playerID)
+INNER JOIN Teams
+ON Batting.teamID=Teams.teamID AND Batting.yearID=Teams.yearID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+As you can see in the chart above, the answer is 22 instances.
